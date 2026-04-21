@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LinkedIn Profil Optimierungsguide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0f0f11;
+    --bg2: #18181c;
+    --bg3: #222228;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.14);
+    --text: #e8e8ec;
+    --text2: #9898a6;
+    --text3: #5a5a6e;
+    --accent: #6c63ff;
+    --accent2: #8b84ff;
+    --accent-bg: rgba(108,99,255,0.12);
+    --accent-border: rgba(108,99,255,0.3);
+    --danger: #ff6b6b;
+    --danger-bg: rgba(255,107,107,0.1);
+    --warning: #ffd166;
+    --warning-bg: rgba(255,209,102,0.1);
+    --success: #06d6a0;
+    --success-bg: rgba(6,214,160,0.1);
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  /* Header */
+  .header {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    border-bottom: 1px solid var(--border2);
+    padding: 3rem 2rem 2.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -60px; left: 50%; transform: translateX(-50%);
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(108,99,255,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .header-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    background: var(--accent-bg);
+    border: 1px solid var(--accent-border);
+    border-radius: 20px;
+    padding: 4px 14px;
+    margin-bottom: 1rem;
+  }
+  .header h1 {
+    font-size: clamp(1.6rem, 4vw, 2.4rem);
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+  }
+  .header p {
+    color: var(--text2);
+    font-size: 15px;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  /* Layout */
+  .container {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+  }
+
+  /* Progress */
+  .progress-wrap {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 1.5rem;
+  }
+  .prog-label {
+    font-size: 12px;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+    white-space: nowrap;
+  }
+  .bar-track {
+    flex: 1;
+    height: 3px;
+    background: var(--bg3);
+    border-radius: 2px;
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.4s cubic-bezier(.4,0,.2,1);
+  }
+
+  /* Step nav */
+  .step-nav {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+  }
+  .step-btn {
+    padding: 6px 13px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text3);
+    font-size: 12px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .step-btn:hover { border-color: var(--border2); color: var(--text2); background: var(--bg2); }
+  .step-btn.active {
+    background: var(--accent-bg);
+    color: var(--accent2);
+    border-color: var(--accent-border);
+    font-weight: 500;
+  }
+
+  /* Cards */
+  .step-card { display: none; }
+  .step-card.visible { display: block; }
+
+  .section-title {
+    font-size: 22px;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+  }
+  .section-sub {
+    font-size: 14px;
+    color: var(--text2);
+    margin-bottom: 1.5rem;
+  }
+
+  /* Tags */
+  .tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+  .tag.must { background: var(--danger-bg); color: var(--danger); border: 1px solid rgba(255,107,107,0.2); }
+  .tag.high { background: var(--warning-bg); color: var(--warning); border: 1px solid rgba(255,209,102,0.2); }
+  .tag.boost { background: var(--success-bg); color: var(--success); border: 1px solid rgba(6,214,160,0.2); }
+
+  /* Items */
+  .item {
+    border: 1px solid var(--border);
+    border-left: 2px solid var(--accent);
+    background: var(--bg2);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    padding: 14px 18px;
+    margin-bottom: 12px;
+    transition: border-color 0.15s;
+  }
+  .item:hover { border-color: var(--border2); border-left-color: var(--accent2); }
+  .item h3 { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 6px; }
+  .item p { font-size: 13px; color: var(--text2); line-height: 1.65; margin-bottom: 4px; }
+  .item p:last-child { margin-bottom: 0; }
+  .item .tip { font-size: 12px; color: var(--text3); font-style: italic; margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--border); }
+  .item strong { color: var(--text); font-weight: 500; }
+  .item em { color: var(--accent2); font-style: normal; }
+
+  /* Action button */
+  .action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 1rem;
+    padding: 8px 18px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--accent-border);
+    background: var(--accent-bg);
+    color: var(--accent2);
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-decoration: none;
+  }
+  .action-btn:hover { background: rgba(108,99,255,0.2); border-color: var(--accent2); }
+
+  /* Prompt box */
+  .prompt-box {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.7;
+    white-space: pre-wrap;
+    font-family: 'DM Mono', monospace;
+    max-height: 400px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--bg3) transparent;
+  }
+  .copy-btn {
+    margin-top: 12px;
+    padding: 9px 20px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border2);
+    background: var(--bg3);
+    color: var(--text2);
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .copy-btn:hover { background: var(--bg2); color: var(--text); }
+  .copy-btn.copied { color: var(--success); border-color: rgba(6,214,160,0.3); }
+
+  /* Legend */
+  .legend {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 1.8rem;
+    padding: 10px 14px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    color: var(--text3);
+  }
+  .legend span { display: flex; align-items: center; gap: 6px; }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text3);
+    font-size: 12px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--bg3); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-badge">LinkedIn Masterguide</div>
+  <h1>Profil Optimierung</h1>
+  <p>8 Schritte für maximale Sichtbarkeit, Professionalität und Reichweite – branchenunabhängig</p>
+</div>
+
+<div class="container">
+
+  <div class="legend">
+    <span><span class="tag must">Pflicht</span> Absolute Basis – sofort umsetzen</span>
+    <span><span class="tag high">Hoch</span> Großer Impact – diese Woche erledigen</span>
+    <span><span class="tag boost">Boost</span> Sichtbarkeits-Multiplikator</span>
+  </div>
+
+  <div class="progress-wrap">
+    <span class="prog-label" id="prog-label">01 / 08</span>
+    <div class="bar-track"><div class="bar-fill" id="prog-bar" style="width:12.5%"></div></div>
+  </div>
+
+  <div class="step-nav" id="step-nav">
+    <button class="step-btn active" onclick="go(0)">① Foto & Banner</button>
+    <button class="step-btn" onclick="go(1)">② Headline</button>
+    <button class="step-btn" onclick="go(2)">③ About</button>
+    <button class="step-btn" onclick="go(3)">④ Erfahrung</button>
+    <button class="step-btn" onclick="go(4)">⑤ Skills & SEO</button>
+    <button class="step-btn" onclick="go(5)">⑥ Content</button>
+    <button class="step-btn" onclick="go(6)">⑦ Netzwerk</button>
+    <button class="step-btn" onclick="go(7)">⑧ LLM-Prompt</button>
+  </div>
+
+  <!-- STEP 0 -->
+  <div class="step-card visible" id="s0">
+    <p class="section-title">Foto & Bannerbild</p>
+    <p class="section-sub">Dein erster Eindruck – entscheidet in 0,3 Sekunden</p>
+    <div class="item">
+      <h3>Profilfoto <span class="tag must">Pflicht</span></h3>
+      <p>Professionelles Headshot, du nimmst 60–70% des Bildes ein. Hintergrund neutral oder dezent gebrandett. Kleidung passend zur Zielbranche. Gesicht klar beleuchtet, Blick in die Kamera.</p>
+      <p class="tip">Tipp: Canva, Photoroom oder ein lokaler Fotograf für 50–80 € zahlt sich aus. KI-Tools wie ProfilePictureMaker.com als Notlösung. Kein Urlaubsbild, kein Gruppenfoto.</p>
+    </div>
+    <div class="item">
+      <h3>Bannerbild (1584 × 396 px) <span class="tag high">Hoch</span></h3>
+      <p>Nutze den Banner als persönliche Werbefläche: dein Fachgebiet, ein Claim, Website-URL oder subtiles Branding-Motiv. Kein LinkedIn-Standardbild lassen.</p>
+      <p class="tip">Tipp: Canva hat kostenlose LinkedIn-Banner-Templates. Farben grob mit der Headline angleichen → Wiedererkennung. Tools: Canva, Adobe Express.</p>
+    </div>
+    <div class="item">
+      <h3>Name & Profilsprache <span class="tag must">Pflicht</span></h3>
+      <p>Vollständiger Klarname. Keine Titel im Namensfeld (Ausnahme: Dr. bei Ärzten/Wissenschaft). Profilsprache = Sprache der Zielmärkte. Bei DACH+International: konsequent Englisch oder zwei getrennte Profile.</p>
+    </div>
+    <div class="item">
+      <h3>Custom URL setzen <span class="tag high">Hoch</span></h3>
+      <p>Einstellungen → Öffentliches Profil bearbeiten → URL anpassen. Ziel: <em>linkedin.com/in/vorname-nachname</em>. Für E-Mail-Signatur, CV und Bewerbungsunterlagen.</p>
+    </div>
+  </div>
+
+  <!-- STEP 1 -->
+  <div class="step-card" id="s1">
+    <p class="section-title">Headline – die wichtigste Zeile</p>
+    <p class="section-sub">220 Zeichen, die über Klick oder Scroll entscheiden – und massiv SEO-relevant sind</p>
+    <div class="item">
+      <h3>Die Winning-Formel <span class="tag must">Pflicht</span></h3>
+      <p><strong>Rolle | Nutzen für andere | Keyword 1 · Keyword 2 · Keyword 3</strong></p>
+      <p>Beispiel: <em>Product Manager | Bringe B2B-Software von 0 auf 1 Mio. Nutzer · SaaS · Agile · Go-to-Market</em></p>
+      <p class="tip">❌ Schlecht: "Seeking new opportunities" oder nur "Software Engineer @ Acme GmbH"</p>
+    </div>
+    <div class="item">
+      <h3>Keywords strategisch einbauen <span class="tag high">Hoch</span></h3>
+      <p>Recruiter suchen nach Jobtiteln und Skill-Begriffen. Baue 3–5 hochvolumige Keywords ein. Nutze LinkedIn-Suche (Autocomplete) für Inspiration – was schlägt LinkedIn vor, wenn du tippst?</p>
+    </div>
+    <div class="item">
+      <h3>Open to Work – taktisch nutzen <span class="tag boost">Boost</span></h3>
+      <p>Nur für Recruiter sichtbar schalten (kein öffentlicher grüner Rahmen) – wenn du noch angestellt bist. Öffentlich schalten wenn du aktiv suchst und Arbeitgeber es ruhig wissen darf.</p>
+    </div>
+    <div class="item">
+      <h3>Headline für verschiedene Ziele <span class="tag high">Hoch</span></h3>
+      <p><strong>Jobsuche:</strong> Jobtitel + Skills + Verfügbarkeit<br>
+      <strong>Personal Brand:</strong> Expertise + unique angle + Publikum<br>
+      <strong>Kundengewinnung:</strong> Problem das du löst + Ergebnis + Nische</p>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="step-card" id="s2">
+    <p class="section-title">About / Summary</p>
+    <p class="section-sub">2.600 Zeichen – deine Bühne. Die meisten verschwenden sie.</p>
+    <div class="item">
+      <h3>Aufbau: Hook → Mehrwert → Proof → CTA <span class="tag must">Pflicht</span></h3>
+      <p><strong>Zeile 1–2 (Hook):</strong> Starker Einstieg – wird ohne "mehr lesen" angezeigt. Keine Selbstbeweihräucherung, sondern Relevanz für den Leser.<br><strong>Mittelteil:</strong> Was du tust, für wen, was dabei rauskommt. Ich-Form, persönlich und klar.<br><strong>Zahlen/Ergebnisse:</strong> Mindestens 2–3 konkrete Erfolge mit Metriken.<br><strong>Ende (CTA):</strong> Klarer Handlungsaufruf – Kontaktaufnahme, Website, Kalenderlink.</p>
+    </div>
+    <div class="item">
+      <h3>Formatting & Lesbarkeit <span class="tag high">Hoch</span></h3>
+      <p>Kurze Absätze (3–4 Zeilen max). Emojis sparsam als visuelle Anker (✅ 🎯 ▶). Bullet-Points für Listen. Kein Fließtext-Block über 6 Zeilen am Stück.</p>
+      <p class="tip">Mobile-Test: 60% der Nutzer lesen auf dem Handy. Kurze Sätze gewinnen. Im Handy vorschau prüfen bevor du veröffentlichst.</p>
+    </div>
+    <div class="item">
+      <h3>Keywords natürlich wiederholen <span class="tag boost">Boost</span></h3>
+      <p>Die About-Sektion ist stark für den LinkedIn-Algorithmus. Wichtigste Keywords aus der Headline hier natürlich einbauen – kein Keyword-Stuffing, fließender Text bleibt Prio.</p>
+    </div>
+    <div class="item">
+      <h3>Sprache & Ton <span class="tag high">Hoch</span></h3>
+      <p>Authentisch statt steif. Schreib wie du redest – nicht wie ein Lebenslauf klingt. Menschen vernetzen sich mit Menschen, nicht mit Lebensläufen. Persönlichkeit zeigen.</p>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="step-card" id="s3">
+    <p class="section-title">Berufserfahrung</p>
+    <p class="section-sub">Kein Lebenslauf-Dump – ein Ergebnis-Portfolio</p>
+    <div class="item">
+      <h3>Formel: Aktion → Ergebnis → Kontext <span class="tag must">Pflicht</span></h3>
+      <p>Jeder Bullet startet mit einem starken Verb: <em>Skaliert, Eingeführt, Reduziert, Aufgebaut, Gesteigert, Verhandelt.</em><br>Dann das Ergebnis mit Zahl: <em>Umsatz um 35% gesteigert, Team von 3 auf 12 skaliert.</em><br>Dann Kontext wenn nötig: <em>innerhalb von 6 Monaten / im DACH-Markt.</em></p>
+    </div>
+    <div class="item">
+      <h3>Medien und Belege anhängen <span class="tag high">Hoch</span></h3>
+      <p>Präsentationen, Case Studies, Artikel, Zertifikate als Anhang bei jeder Stelle einfügen. Macht das Profil visuell reichhaltiger und steigert die Glaubwürdigkeit massiv.</p>
+    </div>
+    <div class="item">
+      <h3>Ältere Stellen kürzer halten <span class="tag boost">Boost</span></h3>
+      <p>Vor 10+ Jahren: nur Titel, Firma, Zeitraum – kein langer Beschreibungstext. Fokus liegt auf den letzten 5–7 Jahren. Freelance/Beratung als eigene Einträge aufführen.</p>
+    </div>
+    <div class="item">
+      <h3>Ausbildung & Zertifikate <span class="tag high">Hoch</span></h3>
+      <p>Alle relevanten Zertifikate eintragen (LinkedIn Learning, Coursera, Google, AWS etc.). Zeigt kontinuierliche Weiterbildung. Ausbildungssektion vollständig ausfüllen – auch ohne Top-Uni.</p>
+    </div>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="step-card" id="s4">
+    <p class="section-title">Skills, Keywords & SEO</p>
+    <p class="section-sub">Der Algorithmus liest, was Recruiter suchen – sei findbar</p>
+    <div class="item">
+      <h3>Top 3 Skills pinnen <span class="tag must">Pflicht</span></h3>
+      <p>LinkedIn zeigt zuerst deine Top-3-Skills prominent an. Wähle die aus, die am stärksten mit deinem Ziel übereinstimmen – nicht die, die du am längsten hast. Bestätigungen von Kontakten = Social Proof.</p>
+    </div>
+    <div class="item">
+      <h3>Keyword-Dichte optimieren <span class="tag high">Hoch</span></h3>
+      <p>Dein wichtigstes Keyword sollte in <strong>Headline, About, Erfahrung UND Skills</strong> auftauchen. Nutze LinkedIn-Stellenanzeigen als Keyword-Quelle: Analysiere 5 Traumjobs und notiere welche Begriffe immer wieder auftauchen.</p>
+      <p class="tip">Tool-Tipp: Jobscan.co vergleicht deinen CV mit Stellenanzeigen auf Keyword-Match. Für LinkedIn sehr hilfreich.</p>
+    </div>
+    <div class="item">
+      <h3>Skills-Liste optimieren <span class="tag high">Hoch</span></h3>
+      <p>Max. 50 Skills möglich – fokussiere auf 20–30 hochrelevante. Mischung aus Hard Skills (konkrete Technologien, Methoden) und Soft Skills (Leadership, Strategy). Veraltete Skills entfernen.</p>
+    </div>
+    <div class="item">
+      <h3>Empfehlungen anfordern <span class="tag boost">Boost</span></h3>
+      <p>3+ Empfehlungen von Vorgesetzten oder Kunden = massiver Vertrauensbonus. Beim Anfragen: Beschreibe dem Empfehler was du dir wünschst. Konkreter Rahmen → bessere Empfehlung. Gegenseitig empfehlen ist fair.</p>
+    </div>
+  </div>
+
+  <!-- STEP 5 -->
+  <div class="step-card" id="s5">
+    <p class="section-title">Aktivität & Content-Strategie</p>
+    <p class="section-sub">Perfektes Profil + Stille = unsichtbar. Sichtbarkeit kommt durch Aktivität.</p>
+    <div class="item">
+      <h3>Posting-Frequenz: 2–3× pro Woche <span class="tag must">Pflicht</span></h3>
+      <p>Für nachhaltige Sichtbarkeit musst du regelmäßig posten. Kein Posting = Profil bleibt passiv und wird seltener ausgespielt. Konsistenz über 90 Tage schlägt viralen Einzelpost.</p>
+    </div>
+    <div class="item">
+      <h3>Content-Typen die performen <span class="tag high">Hoch</span></h3>
+      <p><strong>Text-Posts:</strong> Persönliche Erfahrungen, Learnings, Meinungen (höchste organische Reichweite)<br>
+      <strong>Karussell-PDFs:</strong> Wissensvermittlung in Slideshow-Format – sehr teilbar<br>
+      <strong>Kommentare auf fremde Posts:</strong> Sichtbarkeit ohne eigenen Post – unterschätzt<br>
+      <strong>LinkedIn Newsletter:</strong> Für regelmäßige Abonnenten, Algorithmus-Boost beim Start</p>
+    </div>
+    <div class="item">
+      <h3>Hook-Formel für Posts <span class="tag boost">Boost</span></h3>
+      <p>Die erste Zeile entscheidet über "mehr lesen". Starke Hooks: <em>"Ich habe einen Fehler gemacht."</em> / <em>"Das hat mir niemand gesagt."</em> / <em>"3 Dinge die ich in 10 Jahren gelernt habe:"</em> / <em>"Unpopular opinion:"</em></p>
+      <p class="tip">Keine externen Links im Post selbst (LinkedIn bestraft Reichweite). Link in erste Kommentar.</p>
+    </div>
+    <div class="item">
+      <h3>Engagement zurückgeben <span class="tag high">Hoch</span></h3>
+      <p>Jeden Kommentar auf eigene Posts beantworten – besonders in den ersten 60 Minuten. LinkedIn wertet Engagement als Signal für Relevanz. Kommentiere auch täglich 3–5 relevante Posts in deiner Nische.</p>
+    </div>
+  </div>
+
+  <!-- STEP 6 -->
+  <div class="step-card" id="s6">
+    <p class="section-title">Netzwerk, SSI & Profilstärke</p>
+    <p class="section-sub">Quantität + Qualität: Beides zählt für den Algorithmus</p>
+    <div class="item">
+      <h3>LinkedIn SSI-Score verstehen <span class="tag must">Pflicht</span></h3>
+      <p>Der Social Selling Index (SSI) misst 4 Faktoren: Profil aufgebaut, richtige Leute finden, Insights teilen, Beziehungen aufbauen. Ziel: Score über 70 für maximale Reichweite.</p>
+      <p class="tip">Prüfen unter: linkedin.com/sales/ssi – kostenlos einsehbar</p>
+    </div>
+    <div class="item">
+      <h3>Profilstärke auf "All-Star" <span class="tag must">Pflicht</span></h3>
+      <p>All-Star = alle wichtigen Sektionen ausgefüllt. Checkliste: ✅ Foto ✅ Headline ✅ Summary ✅ 3+ Erfahrungen ✅ Ausbildung ✅ 5+ Skills ✅ 50+ Verbindungen ✅ eine Empfehlung</p>
+    </div>
+    <div class="item">
+      <h3>Netzwerk gezielt aufbauen <span class="tag high">Hoch</span></h3>
+      <p>Täglich 5–10 personalisierte Vernetzungsanfragen mit kurzer Notiz warum du dich vernetzen möchtest. Keine Massen-Blind-Anfragen. Zielgruppe: Entscheider, Peers, potenzielle Kunden/Arbeitgeber in deiner Branche.</p>
+    </div>
+    <div class="item">
+      <h3>Creator Mode aktivieren <span class="tag boost">Boost</span></h3>
+      <p>Für alle die Content erstellen: Creator Mode aktivieren → "Folgen" ersetzt "Vernetzen" als primäre Aktion → bessere Reichweite für Posts. Bis zu 5 Topics angeben auf die du dich fokussierst (Hashtags).</p>
+    </div>
+  </div>
+
+  <!-- STEP 7 -->
+  <div class="step-card" id="s7">
+    <p class="section-title">Universeller LLM-Prompt</p>
+    <p class="section-sub">Kopiere diesen Prompt in ChatGPT, Claude, Gemini oder ein anderes LLM – für ein vollständig personalisiertes LinkedIn-Profil</p>
+    <div class="prompt-box" id="prompt-text">Du bist ein erfahrener LinkedIn-Experte, HR-Berater und Personal-Branding-Spezialist.
+
+Deine Aufgabe: Hilf mir dabei, mein LinkedIn-Profil zu optimieren, um maximale Sichtbarkeit, Professionalität und Relevanz für mein Ziel zu erreichen.
+
+Stelle mir zuerst folgende Fragen (eine nach der anderen, warte auf meine Antwort):
+
+1. In welcher Branche/welchem Bereich arbeitest du? (z.B. Tech, Marketing, Finance, HR, Sales)
+2. Was ist deine aktuelle Berufsbezeichnung und wie viele Jahre Erfahrung hast du?
+3. Was ist dein primäres LinkedIn-Ziel? (Jobsuche / Netzwerk / Personal Brand / Kundengewinnung)
+4. Wen möchtest du mit deinem Profil ansprechen? (Recruiter / Entscheider / Peers / Kunden)
+5. Was sind deine 3–5 wichtigsten beruflichen Erfolge der letzten 5 Jahre? (gerne mit Zahlen)
+6. Welche Keywords sollen Recruiter oder Kunden nutzen, um dich zu finden?
+7. Welche Stärken und Eigenschaften sollen im Profil besonders hervorstechen?
+8. Hast du bereits ein Profil? Wenn ja, was gefällt dir daran nicht?
+
+Erstelle auf Basis meiner Antworten folgende Texte – vollständig ausformuliert und sofort einsatzbereit:
+
+A) Headline (max. 220 Zeichen, mit Keywords, Mehrwert und Rolle)
+B) About/Summary (ca. 1.500–2.000 Zeichen, mit Hook, Mehrwert, Beweisen und CTA)
+C) Optimierte Beschreibung für die aktuelle Stelle (3–5 Bullets, Ergebnis-orientiert)
+D) 3 Post-Ideen für den Start, passend zu Branche und Ziel
+E) Empfehlung für Top-3 Skills die ich pinnen sollte
+
+Erkläre zu jedem Element kurz WARUM du diese Wahl getroffen hast.
+Passe Tonalität und Fachsprache exakt auf die genannte Branche an.</div>
+    <button class="copy-btn" id="copy-btn" onclick="copyPrompt()">Prompt kopieren</button>
+  </div>
+
+</div>
+
+<footer>
+  LinkedIn Profil Optimierungsguide · Erstellt mit Claude · <a href="https://claude.ai" style="color: var(--accent2); text-decoration:none;">claude.ai</a>
+</footer>
+
+<script>
+let cur = 0;
+const total = 8;
+function go(i) {
+  document.getElementById('s'+cur).classList.remove('visible');
+  document.querySelectorAll('.step-btn')[cur].classList.remove('active');
+  cur = i;
+  document.getElementById('s'+cur).classList.add('visible');
+  document.querySelectorAll('.step-btn')[cur].classList.add('active');
+  const n = String(cur+1).padStart(2,'0');
+  const t = String(total).padStart(2,'0');
+  document.getElementById('prog-label').textContent = n + ' / ' + t;
+  document.getElementById('prog-bar').style.width = ((cur+1)/total*100)+'%';
+}
+function copyPrompt() {
+  const txt = document.getElementById('prompt-text').textContent;
+  navigator.clipboard.writeText(txt).then(()=>{
+    const btn = document.getElementById('copy-btn');
+    btn.textContent = '✓ Kopiert!';
+    btn.classList.add('copied');
+    setTimeout(()=>{ btn.textContent='Prompt kopieren'; btn.classList.remove('copied'); }, 2500);
+  });
+}
+</script>
+</body>
+</html>
