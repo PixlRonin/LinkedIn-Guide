@@ -596,39 +596,46 @@ ${buildContext(d)}
 }
 
 // CALL 2 – Posts, Empfehlungen, Checkliste, Tipps
+// Call 2 – Posts (kurz & knackig)
 function buildPrompt2(d, r1){
   return`Du bist LinkedIn-Experte. Antworte NUR mit JSON, kein Text davor/danach.
 
 ${buildContext(d)}
 
-Bereits erstellte Headline: ${r1.headline?.new||''}
+\`\`\`json
+{"posts":[
+  {"title":"<Typ>","content":"<50-60 Wörter, Hook Zeile 1>"},
+  {"title":"<Typ>","content":"<50-60 Wörter>"},
+  {"title":"<Typ>","content":"<50-60 Wörter>"}
+]}
+\`\`\``;
+}
+
+// Call 3 – Checkliste + Tipps
+function buildPrompt3(d){
+  return`Du bist LinkedIn-Experte. Antworte NUR mit JSON, kein Text davor/danach.
+
+Branche: ${d.industry||'allgemein'}. Ziel: ${d.goals||'Sichtbarkeit'}. Sprache: ${d.lang||'Deutsch'}.
 
 \`\`\`json
-{
-  "posts":[
-    {"title":"<Typ>","content":"<80-120W Post, Hook Zeile 1>"},
-    {"title":"<Typ>","content":"<80-120W>"},
-    {"title":"<Typ>","content":"<80-120W>"}
-  ],
-  "checklist":[
-    {"category":"Grundlagen","item":"<Aufgabe>","desc":"<Erklärung>","priority":"high"},
-    {"category":"Grundlagen","item":"<Aufgabe>","desc":"<Erklärung>","priority":"high"},
-    {"category":"Sichtbarkeit","item":"<Aufgabe>","desc":"<Erklärung>","priority":"high"},
-    {"category":"Sichtbarkeit","item":"<Aufgabe>","desc":"<Erklärung>","priority":"med"},
-    {"category":"Content","item":"<Aufgabe>","desc":"<Erklärung>","priority":"med"},
-    {"category":"Content","item":"<Aufgabe>","desc":"<Erklärung>","priority":"med"},
-    {"category":"Netzwerk","item":"<Aufgabe>","desc":"<Erklärung>","priority":"low"},
-    {"category":"Netzwerk","item":"<Aufgabe>","desc":"<Erklärung>","priority":"low"}
-  ],
-  "tips":[
-    {"title":"<T>","text":"<Empfehlung>","priority":"high"},
-    {"title":"<T>","text":"<Empfehlung>","priority":"high"},
-    {"title":"<T>","text":"<Empfehlung>","priority":"med"},
-    {"title":"<T>","text":"<Empfehlung>","priority":"med"},
-    {"title":"<T>","text":"<Empfehlung>","priority":"low"},
-    {"title":"<T>","text":"<Empfehlung>","priority":"low"}
-  ]
-}
+{"checklist":[
+  {"category":"Grundlagen","item":"<Aufgabe>","desc":"<1 Satz>","priority":"high"},
+  {"category":"Grundlagen","item":"<Aufgabe>","desc":"<1 Satz>","priority":"high"},
+  {"category":"Sichtbarkeit","item":"<Aufgabe>","desc":"<1 Satz>","priority":"high"},
+  {"category":"Sichtbarkeit","item":"<Aufgabe>","desc":"<1 Satz>","priority":"med"},
+  {"category":"Content","item":"<Aufgabe>","desc":"<1 Satz>","priority":"med"},
+  {"category":"Content","item":"<Aufgabe>","desc":"<1 Satz>","priority":"med"},
+  {"category":"Netzwerk","item":"<Aufgabe>","desc":"<1 Satz>","priority":"low"},
+  {"category":"Netzwerk","item":"<Aufgabe>","desc":"<1 Satz>","priority":"low"}
+],
+"tips":[
+  {"title":"<T>","text":"<1 Satz>","priority":"high"},
+  {"title":"<T>","text":"<1 Satz>","priority":"high"},
+  {"title":"<T>","text":"<1 Satz>","priority":"med"},
+  {"title":"<T>","text":"<1 Satz>","priority":"med"},
+  {"title":"<T>","text":"<1 Satz>","priority":"low"},
+  {"title":"<T>","text":"<1 Satz>","priority":"low"}
+]}
 \`\`\``;
 }
 
@@ -662,22 +669,29 @@ async function runAnalysis(){
   showScreen('screen-loading');resetSteps();
 
   try{
-    // Call 1: Core texts
+    // Call 1: Headline, About, Experience, Skills
     stepActive(0);stepActive(1);stepActive(2);
     const text1=await callAPI(buildPrompt1(d));
     const r1=parseJSON(text1);
     if(!r1){showError('Call 1 fehlgeschlagen.\n\nRohantwort:\n'+text1.substring(0,500));return;}
     stepDone(0);stepDone(1);stepDone(2);
 
-    // Call 2: Posts, recs, checklist, tips
-    stepActive(3);stepActive(4);stepActive(5);
+    // Call 2: Posts
+    stepActive(3);
     const text2=await callAPI(buildPrompt2(d,r1));
     const r2=parseJSON(text2);
     if(!r2){showError('Call 2 fehlgeschlagen.\n\nRohantwort:\n'+text2.substring(0,500));return;}
-    stepDone(3);stepDone(4);stepDone(5);
+    stepDone(3);
 
-    // Merge both results
-    const combined={...r1,...r2};
+    // Call 3: Checklist + Tips
+    stepActive(4);stepActive(5);
+    const text3=await callAPI(buildPrompt3(d));
+    const r3=parseJSON(text3);
+    if(!r3){showError('Call 3 fehlgeschlagen.\n\nRohantwort:\n'+text3.substring(0,500));return;}
+    stepDone(4);stepDone(5);
+
+    // Merge all results
+    const combined={...r1,...r2,...r3};
     lastResults=combined;
     setTimeout(()=>renderResults(d,combined),700);
 
