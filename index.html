@@ -610,7 +610,7 @@ function buildPrompt(d){
   "aboutOld": "<erkannte About, max 300Z>",
   "expOld": "<erkannte Erfahrung, max 300Z>",
   "headline": {"new":"<max 220Z>","why":"<1 Satz>"},
-  "about": {"new":"<1500-2000Z, Hook+Mehrwert+Zahlen+CTA>","why":"<1 Satz>"},
+  "about": {"new":"<800-1000Z, Hook+Mehrwert+Zahlen+CTA>","why":"<1 Satz>"},
   "experience": {"new":"<5-6 Bullets, Verb+Ergebnis+Zahl>","why":"<1 Satz>"},
   "skills": {"new":"TOP 3 PINNEN: [S1, S2, S3]\n\nVollständige Liste (15-20):\n• Skill\n...","why":"<1 Satz>"},
   "certificates": [
@@ -622,7 +622,7 @@ function buildPrompt(d){
     {"type":"Kunde","text":"<fertiger Text aus Kunden-Perspektive>"}
   ],
   "posts": [
-    {"title":"<Typ>","content":"<fertiger Post 150-250W, Hook in Zeile 1>"},
+    {"title":"<Typ>","content":"<fertiger Post 100-150W, Hook in Zeile 1>"},
     {"title":"<Typ>","content":"<fertiger Post>"},
     {"title":"<Typ>","content":"<fertiger Post>"}
   ],
@@ -670,7 +670,7 @@ async function runAnalysis(){
     const res=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
       headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:8000,messages:[{role:'user',content:buildPrompt(d)}]})
+      body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:16000,messages:[{role:'user',content:buildPrompt(d)}]})
     });
     timers.forEach(t=>clearTimeout(t));
     if(!res.ok){const e=await res.json().catch(()=>({}));showError('API Fehler: '+(e.error?.message||`HTTP ${res.status}`));return;}
