@@ -198,12 +198,6 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
 .cert-item h4{font-size:14px;color:var(--text);margin-bottom:3px}
 .cert-item p{font-size:13px;color:var(--text2);line-height:1.5}
 
-/* recommendation */
-.rec-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:1.2rem}
-.rec-type-tabs{display:flex;padding:1rem 1.5rem;gap:8px;border-bottom:1px solid var(--border);flex-wrap:wrap}
-.rec-type-btn{padding:5px 14px;border-radius:20px;border:1px solid var(--border2);background:transparent;color:var(--text2);font-size:12px;font-family:'Outfit',sans-serif;cursor:pointer;transition:all .15s}
-.rec-type-btn.active{background:var(--aglow);border-color:var(--accent);color:var(--accent2)}
-.rec-content{padding:1.5rem;font-size:14px;color:var(--text);line-height:1.8;white-space:pre-wrap;word-break:break-word}
 
 /* toast */
 .toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(20px);background:var(--green);color:#1a2e22;font-family:'Outfit',sans-serif;font-weight:600;font-size:14px;padding:10px 24px;border-radius:30px;opacity:0;transition:all .3s;pointer-events:none;z-index:9999;white-space:nowrap}
@@ -431,11 +425,9 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
         <button class="result-tab" onclick="switchTab(1)">📝 About</button>
         <button class="result-tab" onclick="switchTab(2)">💼 Erfahrung</button>
         <button class="result-tab" onclick="switchTab(3)">🎯 Skills</button>
-        <button class="result-tab" onclick="switchTab(4)">🏅 Zertifikate</button>
-        <button class="result-tab" onclick="switchTab(5)">⭐ Empfehlung</button>
-        <button class="result-tab" onclick="switchTab(6)">💬 Posts</button>
-        <button class="result-tab" onclick="switchTab(7)">✅ Checkliste</button>
-        <button class="result-tab" onclick="switchTab(8)">💡 Tipps</button>
+        <button class="result-tab" onclick="switchTab(4)">💬 Posts</button>
+        <button class="result-tab" onclick="switchTab(5)">✅ Checkliste</button>
+        <button class="result-tab" onclick="switchTab(6)">💡 Tipps</button>
       </div>
     </div>
 
@@ -488,37 +480,13 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
         <div class="copy-row"><p id="skills-why"></p><button class="copy-btn" id="cp-3" onclick="doCopy('skills-new','cp-3')">📋 Kopieren</button></div>
       </div>
     </div>
-
-    <!-- Tab 4: Zertifikate -->
-    <div class="result-panel" id="tab-4">
-      <div class="compare-card">
-        <div class="compare-header"><h3>Zertifikate & Weiterbildung <span class="badge badge-new">Optimiert</span></h3></div>
-        <div class="compare-body">
-          <div class="compare-col full-col">
-            <div class="compare-col-label">Empfohlene Darstellung auf LinkedIn</div>
-            <div id="certs-container"></div>
-          </div>
-        </div>
-        <div class="copy-row"><p id="certs-why"></p><button class="copy-btn" id="cp-4" onclick="doCopy('certs-raw','cp-4')">📋 Kopieren</button></div>
-      </div>
-      <span id="certs-raw" style="display:none"></span>
-    </div>
-
-    <!-- Tab 5: Empfehlung -->
-    <div class="result-panel" id="tab-5">
-      <div class="rec-card">
-        <div class="compare-header"><h3>Empfehlungstext-Vorlagen <span class="badge badge-new">3 Varianten</span></h3></div>
-        <div class="rec-type-tabs" id="rec-tabs"></div>
-        <div class="rec-content" id="rec-content">—</div>
-        <div class="copy-row"><p>Fertig formuliert – direkt an Empfehler schicken zum Ausfüllen</p><button class="copy-btn" id="cp-5" onclick="doCopy('rec-content','cp-5')">📋 Kopieren</button></div>
-      </div>
     </div>
 
     <!-- Tab 6: Posts -->
-    <div class="result-panel" id="tab-6"><div id="posts-container"></div></div>
+    <div class="result-panel" id="tab-4"><div id="posts-container"></div></div>
 
     <!-- Tab 7: Checkliste -->
-    <div class="result-panel" id="tab-7">
+    <div class="result-panel" id="tab-5">
       <div class="compare-card" style="overflow:visible">
         <div class="compare-header"><h3>All-Star Profil Checkliste <span class="badge badge-new">Interaktiv</span></h3></div>
         <div style="padding:1.5rem">
@@ -535,14 +503,14 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
     </div>
 
     <!-- Tab 8: Tipps -->
-    <div class="result-panel" id="tab-8"><div class="tips-grid" id="tips-container"></div></div>
+    <div class="result-panel" id="tab-6"><div class="tips-grid" id="tips-container"></div></div>
 
   </div>
 </div>
 
 <script>
 let apiKey='',currentMode='form',lastResults={},lastFormData={};
-let recVariants=[],currentRec=0,checkItems=[];
+let checkItems=[];
 
 // KEY
 function toggleKey(){const i=document.getElementById('api-key-input');i.type=i.type==='password'?'text':'password'}
@@ -598,99 +566,121 @@ function stepDone(i){const e=document.getElementById('ls-'+i);if(!e)return;e.cla
 function resetSteps(){for(let i=0;i<6;i++){const e=document.getElementById('ls-'+i);if(e){e.className='loading-step';e.querySelector('.step-icon').textContent='◌'}}}
 
 // PROMPT
-function buildPrompt(d){
-  const schema=`Antworte AUSSCHLIESSLICH mit einem validen JSON-Objekt. Kein Text davor/danach.
+// Build context string shared by both calls
+function buildContext(d){
+  if(d.mode==='paste') return`ZIEL: ${d.goals}\nSprache: ${d.lang||'Deutsch'}. Ton: ${d.tone||'Professionell'}.\n\nPROFIL-TEXT:\n---\n${d.raw}\n---`;
+  return`Name: ${d.name}\nRolle: ${d.title}\nBranche: ${d.industry}\nErfahrung: ${d.years}\nZiele: ${d.goals}\nZielgruppe: ${d.audience||'n/a'}\nHeadline: ${d.headlineOld||'(keine)'}\nAbout: ${d.aboutOld||'(keine)'}\nStelle: ${d.job||'(keine)'}\nErfolge: ${d.achievements}\nKeywords: ${d.keywords||'n/a'}\nStärken: ${d.strengths||'n/a'}\nZertifikate: ${d.certs||'keine'}\nEmpfehler: ${d.recommender||'allgemein'}\nZusatz: ${d.extra||'(keine)'}\nSprache: ${d.lang||'Deutsch'}. Ton: ${d.tone||'Professionell'}.`;
+}
+
+// CALL 1 – Kerntexte
+function buildPrompt1(d){
+  return`Du bist LinkedIn-Experte. Antworte NUR mit JSON, kein Text davor/danach.
+
+${buildContext(d)}
 
 \`\`\`json
 {
-  "score": <0-100>,
-  "scoreTitle": "<Kurztitel z.B. 'Solides Fundament'>",
-  "scoreDesc": "<1-2 Sätze Bewertung>",
-  "headlineOld": "<erkannte Headline oder '(keine)'>",
-  "aboutOld": "<erkannte About, max 300Z>",
-  "expOld": "<erkannte Erfahrung, max 300Z>",
-  "headline": {"new":"<max 220Z>","why":"<1 Satz>"},
-  "about": {"new":"<800-1000Z, Hook+Mehrwert+Zahlen+CTA>","why":"<1 Satz>"},
-  "experience": {"new":"<5-6 Bullets, Verb+Ergebnis+Zahl>","why":"<1 Satz>"},
-  "skills": {"new":"TOP 3 PINNEN: [S1, S2, S3]\n\nVollständige Liste (15-20):\n• Skill\n...","why":"<1 Satz>"},
-  "certificates": [
-    {"name":"<Zertifikat-Name>","issuer":"<Aussteller>","year":"<Jahr>","tip":"<1 Satz Empfehlung wie auf LinkedIn darstellen>"}
+  "score":<0-100>,
+  "scoreTitle":"<Kurztitel>",
+  "scoreDesc":"<2 Sätze>",
+  "headlineOld":"<erkannte Headline>",
+  "aboutOld":"<erkannte About max 200Z>",
+  "expOld":"<erkannte Erfahrung max 200Z>",
+  "headline":{"new":"<max 220Z>","why":"<1 Satz>"},
+  "about":{"new":"<600-900Z Hook+Mehrwert+Zahlen+CTA>","why":"<1 Satz>"},
+  "experience":{"new":"<5 Bullets Verb+Ergebnis+Zahl>","why":"<1 Satz>"},
+  "skills":{"new":"TOP 3: [S1,S2,S3]\n\nListe:\n• Skill...","why":"<1 Satz>"},
+  "certificates":[{"name":"<Name>","issuer":"<Aussteller>","year":"<Jahr>","tip":"<1 Satz>"}]
+}
+\`\`\``;
+}
+
+// CALL 2 – Posts, Empfehlungen, Checkliste, Tipps
+function buildPrompt2(d, r1){
+  return`Du bist LinkedIn-Experte. Antworte NUR mit JSON, kein Text davor/danach.
+
+${buildContext(d)}
+
+Bereits erstellte Headline: ${r1.headline?.new||''}
+
+\`\`\`json
+{
+  "posts":[
+    {"title":"<Typ>","content":"<80-120W Post, Hook Zeile 1>"},
+    {"title":"<Typ>","content":"<80-120W>"},
+    {"title":"<Typ>","content":"<80-120W>"}
   ],
-  "recommendations": [
-    {"type":"Führungskraft","text":"<fertiger Empfehlungstext 150-200W den eine FK schreiben könnte>"},
-    {"type":"Kollege","text":"<fertiger Text von Kollegen-Perspektive>"},
-    {"type":"Kunde","text":"<fertiger Text aus Kunden-Perspektive>"}
-  ],
-  "posts": [
-    {"title":"<Typ>","content":"<fertiger Post 100-150W, Hook in Zeile 1>"},
-    {"title":"<Typ>","content":"<fertiger Post>"},
-    {"title":"<Typ>","content":"<fertiger Post>"}
-  ],
-  "checklist": [
-    {"category":"Grundlagen","item":"<Aufgabe>","desc":"<kurze Erklärung>","priority":"high"},
-    {"category":"Grundlagen","item":"<Aufgabe>","desc":"<kurze Erklärung>","priority":"high"},
+  "checklist":[
+    {"category":"Grundlagen","item":"<Aufgabe>","desc":"<Erklärung>","priority":"high"},
+    {"category":"Grundlagen","item":"<Aufgabe>","desc":"<Erklärung>","priority":"high"},
     {"category":"Sichtbarkeit","item":"<Aufgabe>","desc":"<Erklärung>","priority":"high"},
     {"category":"Sichtbarkeit","item":"<Aufgabe>","desc":"<Erklärung>","priority":"med"},
     {"category":"Content","item":"<Aufgabe>","desc":"<Erklärung>","priority":"med"},
     {"category":"Content","item":"<Aufgabe>","desc":"<Erklärung>","priority":"med"},
     {"category":"Netzwerk","item":"<Aufgabe>","desc":"<Erklärung>","priority":"low"},
-    {"category":"Netzwerk","item":"<Aufgabe>","desc":"<Erklärung>","priority":"low"},
-    {"category":"Extras","item":"<Aufgabe>","desc":"<Erklärung>","priority":"low"},
-    {"category":"Extras","item":"<Aufgabe>","desc":"<Erklärung>","priority":"low"}
+    {"category":"Netzwerk","item":"<Aufgabe>","desc":"<Erklärung>","priority":"low"}
   ],
-  "tips": [
-    {"title":"<T>","text":"<Handlungsempfehlung>","priority":"high"},
-    {"title":"<T>","text":"<Handlungsempfehlung>","priority":"high"},
-    {"title":"<T>","text":"<Handlungsempfehlung>","priority":"med"},
-    {"title":"<T>","text":"<Handlungsempfehlung>","priority":"med"},
-    {"title":"<T>","text":"<Handlungsempfehlung>","priority":"low"},
-    {"title":"<T>","text":"<Handlungsempfehlung>","priority":"low"}
+  "tips":[
+    {"title":"<T>","text":"<Empfehlung>","priority":"high"},
+    {"title":"<T>","text":"<Empfehlung>","priority":"high"},
+    {"title":"<T>","text":"<Empfehlung>","priority":"med"},
+    {"title":"<T>","text":"<Empfehlung>","priority":"med"},
+    {"title":"<T>","text":"<Empfehlung>","priority":"low"},
+    {"title":"<T>","text":"<Empfehlung>","priority":"low"}
   ]
 }
-\`\`\`
-
-Sprache: ${d.lang||'Deutsch'}. Ton: ${d.tone||'Professionell'}. Branchenspezifische Fachsprache.`;
-
-  if(d.mode==='paste')
-    return`Du bist LinkedIn-Experte und Personal-Branding-Spezialist.\n\nAnalysiere diesen Profil-Text und optimiere alle Sektionen.\n\nZIEL: ${d.goals}\n\nPROFIL-TEXT:\n---\n${d.raw}\n---\n\n${schema}`;
-
-  return`Du bist LinkedIn-Experte und Personal-Branding-Spezialist.\n\nErstelle ein vollständig optimiertes LinkedIn-Profil:\n\nName: ${d.name}\nRolle: ${d.title}\nBranche: ${d.industry}\nErfahrung: ${d.years}\nZiele: ${d.goals}\nZielgruppe: ${d.audience||'n/a'}\nHeadline: ${d.headlineOld||'(keine)'}\nAbout: ${d.aboutOld||'(keine)'}\nStelle: ${d.job||'(keine)'}\nErfolge: ${d.achievements}\nKeywords: ${d.keywords||'n/a'}\nStärken: ${d.strengths||'n/a'}\nZertifikate: ${d.certs||'keine angegeben'}\nEmpfehler: ${d.recommender||'allgemein'}\nZusatz: ${d.extra||'(keine)'}\n\n${schema}`;
+\`\`\``;
 }
 
-// ANALYSIS
+async function callAPI(prompt){
+  const res=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:6000,messages:[{role:'user',content:prompt}]})
+  });
+  if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.error?.message||`HTTP ${res.status}`);}
+  const data=await res.json();
+  return data.content?.[0]?.text||'';
+}
+
+function parseJSON(text){
+  const strategies=[
+    ()=>{const m=text.match(/```json\s*([\s\S]*?)\s*```/);return m?JSON.parse(m[1]):null;},
+    ()=>{const m=text.match(/```\s*([\s\S]*?)\s*```/);return m?JSON.parse(m[1]):null;},
+    ()=>{const m=text.match(/\{[\s\S]*\}/);return m?JSON.parse(m[0]):null;},
+    ()=>JSON.parse(text.trim())
+  ];
+  for(const fn of strategies){try{const r=fn();if(r&&typeof r==='object')return r;}catch(e){}}
+  return null;
+}
+
+// ANALYSIS – two sequential API calls
 async function runAnalysis(){
   const d=currentMode==='form'?collectForm():collectPaste();
   const err=validate(d);if(err){alert(err);return;}
   lastFormData=d;
   showScreen('screen-loading');resetSteps();
-  stepActive(0);
-  const timers=[500,1400,2600,3800,5200].map((t,i)=>setTimeout(()=>stepActive(i+1),t));
 
   try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:16000,messages:[{role:'user',content:buildPrompt(d)}]})
-    });
-    timers.forEach(t=>clearTimeout(t));
-    if(!res.ok){const e=await res.json().catch(()=>({}));showError('API Fehler: '+(e.error?.message||`HTTP ${res.status}`));return;}
-    const data=await res.json();
-    const text=data.content?.[0]?.text||'';
+    // Call 1: Core texts
+    stepActive(0);stepActive(1);stepActive(2);
+    const text1=await callAPI(buildPrompt1(d));
+    const r1=parseJSON(text1);
+    if(!r1){showError('Call 1 fehlgeschlagen.\n\nRohantwort:\n'+text1.substring(0,500));return;}
+    stepDone(0);stepDone(1);stepDone(2);
 
-    // 4-strategy JSON parsing
-    let parsed=null;
-    const strategies=[
-      ()=>{const m=text.match(/```json\s*([\s\S]*?)\s*```/);return m?JSON.parse(m[1]):null;},
-      ()=>{const m=text.match(/```\s*([\s\S]*?)\s*```/);return m?JSON.parse(m[1]):null;},
-      ()=>{const m=text.match(/\{[\s\S]*\}/);return m?JSON.parse(m[0]):null;},
-      ()=>JSON.parse(text.trim())
-    ];
-    for(const fn of strategies){try{const r=fn();if(r&&typeof r==='object'){parsed=r;break;}}catch(e){}}
-    if(!parsed){showError('JSON-Parsing fehlgeschlagen.\n\nRohantwort:\n'+text.substring(0,600));return;}
+    // Call 2: Posts, recs, checklist, tips
+    stepActive(3);stepActive(4);stepActive(5);
+    const text2=await callAPI(buildPrompt2(d,r1));
+    const r2=parseJSON(text2);
+    if(!r2){showError('Call 2 fehlgeschlagen.\n\nRohantwort:\n'+text2.substring(0,500));return;}
+    stepDone(3);stepDone(4);stepDone(5);
 
-    lastResults=parsed;
-    for(let i=0;i<6;i++)stepDone(i);
-    setTimeout(()=>renderResults(d,parsed),700);
+    // Merge both results
+    const combined={...r1,...r2};
+    lastResults=combined;
+    setTimeout(()=>renderResults(d,combined),700);
+
   }catch(e){
     showError('Verbindungsfehler:\n'+e.message);
   }
@@ -734,29 +724,6 @@ function renderResults(d,r){
 
   // Skills
   set('skills-new',r.skills?.new||'');set('skills-why',r.skills?.why||'');
-
-  // Certificates
-  const certs=r.certificates||[];
-  const cc=document.getElementById('certs-container');cc.innerHTML='';
-  const rawCerts=certs.map(c=>`${c.name} – ${c.issuer} (${c.year})\n${c.tip}`).join('\n\n');
-  document.getElementById('certs-raw').textContent=rawCerts;
-  set('certs-why','Optimale Reihenfolge und Darstellung für maximale Wirkung auf LinkedIn');
-  if(certs.length){
-    const list=document.createElement('div');list.className='cert-list';
-    certs.forEach(c=>{
-      const item=document.createElement('div');item.className='cert-item';
-      item.innerHTML=`<h4>${c.name||''} <span style="color:var(--text2);font-weight:400">– ${c.issuer||''} ${c.year?'('+c.year+')':''}</span></h4><p>${c.tip||''}</p>`;
-      list.appendChild(item);
-    });
-    cc.appendChild(list);
-  } else {
-    cc.innerHTML='<p style="color:var(--text2);font-size:13px;padding:.5rem 0">Keine Zertifikate angegeben. Im Formular-Modus kannst du Zertifikate eintragen.</p>';
-  }
-
-  // Recommendations
-  recVariants=r.recommendations||[];
-  renderRecTabs();
-
   // Posts
   const pc=document.getElementById('posts-container');pc.innerHTML='';
   (r.posts||[]).forEach((p,i)=>{
@@ -781,22 +748,6 @@ function renderResults(d,r){
   showScreen('screen-results');switchTab(0);
 }
 
-function renderRecTabs(){
-  const tabsEl=document.getElementById('rec-tabs');tabsEl.innerHTML='';
-  recVariants.forEach((rv,i)=>{
-    const btn=document.createElement('button');btn.className='rec-type-btn'+(i===0?' active':'');
-    btn.textContent=rv.type||('Variante '+(i+1));
-    btn.onclick=()=>selectRec(i);
-    tabsEl.appendChild(btn);
-  });
-  if(recVariants.length)selectRec(0);
-  else document.getElementById('rec-content').textContent='Keine Empfehlungstexte generiert.';
-}
-function selectRec(i){
-  currentRec=i;
-  document.querySelectorAll('.rec-type-btn').forEach((b,idx)=>b.classList.toggle('active',idx===i));
-  document.getElementById('rec-content').textContent=recVariants[i]?.text||'—';
-}
 
 function renderChecklist(){
   const container=document.getElementById('checklist-container');container.innerHTML='';
@@ -882,8 +833,6 @@ function copyAll(){
     '── ABOUT / SUMMARY ──',r.about?.new||'','',
     '── ERFAHRUNG – BULLETS ──',r.experience?.new||'','',
     '── SKILLS ──',r.skills?.new||'','',
-    '── ZERTIFIKATE ──',...(r.certificates||[]).map(c=>`• ${c.name} – ${c.issuer} (${c.year}): ${c.tip}`),'',
-    '── EMPFEHLUNGSTEXT (Führungskraft) ──',(r.recommendations?.[0]?.text||''),'',
     ...(r.posts||[]).map((p,i)=>`\n── POST ${i+1}: ${p.title||''} ──\n${p.content||''}`)
   ];
   writeClipboard(parts.join('\n'),null);
